@@ -1,0 +1,32 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'index.css' %}">
+	<link href="https://fonts.googleapis.com/css?family=Oswald|Slabo+27px&display=swap" rel="stylesheet">
+
+</head>
+<body>
+	<div class="app">
+		<div class="wrapper">
+		<h1>Welcome back "{{ request.user }}"</h1>
+		<p>Which journal do you want to move to ?</p>
+		<div class="buttons">
+			<a href="{% url 'dashboard' option='forex' %}" class="btn forex btn-info">
+				Forex
+			</a>
+			<a href="{% url 'dashboard' option='binary' %}" class="btn binary btn-info">
+				Binary Options
+			</a>
+		</div>
+	</div>
+	</div>
+
+</body>
+</html>

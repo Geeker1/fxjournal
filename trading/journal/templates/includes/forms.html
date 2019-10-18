@@ -1,0 +1,95 @@
+{% load crispy_forms_tags %}
+<div id="myModal">
+  <style type="text/css">
+    .asteriskField{
+      display: none !important;
+    }
+  </style>
+		<div class="modal-content container">
+<div class="row w-100 justify-content-center">
+  <div class="fx_wrapper" id="fx_wrap">
+    <span id="span"><strong>x</strong></span>
+  {% if option == 'binary' %}
+      <form class="w-100" method="post" id="fx_form" action="{% url 'binary' %}" name="trading_form" novalidate>
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        {{ form.pair|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4">
+        {{ form.result|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4">
+        {{ form.payout|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.option|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.time|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.lessons|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.reasons|as_crispy_field }}
+      </div>
+      {{ form.stamp }}
+    </div>
+    <button type="submit" class="btn btn-primary">Add Entry</button>
+  </form>
+  {% else %}
+    <form class="w-100" id="fx_form" action="{% url 'forex' %}" method="post" name='trading_form' novalidate>
+
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        {{ form.pair|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4">
+        {{ form.timeStart|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4">
+        {{ form.timeEnded|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4">
+        {{ form.price|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4">
+        {{ form.TP|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4">
+        {{ form.SL|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.rMultiple|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.option|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.lessons|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6">
+        {{ form.reasons|as_crispy_field }}
+      </div>
+      {{ form.stamp }}
+    </div>
+    <button type="submit" id="fx" class="btn btn-primary">Add Entry</button>
+  </form>
+  {% endif %}
+  <form class="w-100" id="stamp_form" method="post" action="{% url 'stamp' %}" name="stamp_form" novalidate>
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        {{ t_form.date|as_crispy_field }}
+      </div>
+      {{ t_form.option }}
+      {{ t_form.owner }}
+    </div>
+    <button type="submit" class="btn btn-primary">Add TimeStamp for {{ option }}</button>
+  </form>
+</div>
+  </div>
+		</div>
+	</div>

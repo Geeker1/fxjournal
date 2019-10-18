@@ -1,0 +1,60 @@
+
+<section class="option-heading">
+<h2>Options Journal
+</h2>
+<a href="{% url 'dashboard' 'forex' %}" class="btn btn-success float-right" type="">
+  Move to Forex journal
+</a>
+</section>
+<table class="table table-responsive-md table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Pair</th>
+      <th scope="col">Time</th>
+      <th scope="col">Option</th>
+      <th scope="col">Reasons</th>
+      <th scope="col">Win/Lose</th>
+      <th scope="col">Lessons</th>
+      <th scope="col">Payout Rate</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    {% for x in stamps %}
+  	<tr data-stamp-id="{{ x.id }}">
+  	<tr id="{{ x.id }}" data-stamp-id="{{ x.id }}">
+  		<td colspan="8" class="text-center">
+  		<h2>{{ x.date|date:"E d, Y" }}</h2>
+  		<button id="modal" value="{{ x.id }}" class="btn btn-info">
+		Create New Trade Entry</button>
+		<form class="d-inline" id="delete_stamp_form" action="{% url 'stamp_delete' x.id %}" data-value="{{ x.id }}">
+          {% csrf_token %}
+          <button type="submit" id="stamp_delete" class="btn btn-danger">
+          Delete TimeStamp</button>
+        </form>
+    <p data-id="{{ x.id }}" class="m-0 mt-3">{% if x.binary.all %} {{ x.binary.all|length }} Entries {% else %} No Entries yet. {% endif %}</p>
+	</td></tr>
+  {% for entry in x.binary.all reversed%}
+    <tr id="{{ entry.entry_id }}" data-stamp-id="{{ x.id }}">
+      <td class="market">{{ entry.pair }}</td>
+      <td>{{ entry.time|date:"G:i:s" }}</td>
+      <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">{{ entry.get_option_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_option_display }}</span>{% endif %}</td>
+      <td><p>{{ entry.reasons }}</p></td>
+      <td class="span">{% if entry.result == "w" %}<span class="badge badge-success">{{ entry.get_result_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_result_display }}</span>{% endif %}</td>
+      <td><p>{{ entry.lessons }}</p></td>
+      <td>{{ entry.payout }}%</td>
+      <td>
+        <form id="delete_form" action="{% url 'binary_d' entry.entry_id %}" data-stamp="{{ x.id }}" data-value="{{ entry.entry_id }}">
+          {% csrf_token %}
+          <button type="submit" id="entry_delete" class="btn btn-danger">
+          X</button>
+        </form>
+        </td>
+    </tr>
+    {% endfor %}
+</tr>
+{% empty %}
+<tr class="text-center"> No Timestamps </tr>
+    {% endfor %}
+  </tbody>
+</table>

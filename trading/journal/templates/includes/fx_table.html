@@ -1,0 +1,67 @@
+<section class="option-heading">
+<h2>Forex Journal
+</h2>
+<a href="{% url 'dashboard' 'binary' %}" class="btn btn-success float-right" type="">
+  Move to Options journal
+</a>
+</section>
+<table class="table table-responsive-md table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Pair</th>
+      <th scope="col">Option</th>
+      <th scope="col">Date Start</th>
+      <th scope="col">Date End</th>
+      <th scope="col">Reasons</th>
+      <th scope="col">Lessons</th>
+      <th scope="col">Price</th>
+      <th scope="col">Stop Loss</th>
+      <th scope="col">Take Profit</th>
+      <th scope="col">Reward Multiple</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    {% for x in stamps %}
+  	<tr data-stamp-id="{{ x.id }}">
+  	<tr id="{{ x.id }}" data-stamp-id="{{ x.id }}">
+  		<td colspan="11" class="text-center">
+  		<h2>{{ x.date|date:"E d, Y" }}</h2>
+  		<button id="modal" value="{{ x.id }}" class="btn btn-info">
+		Create New Trade Entry</button>
+		<form class="d-inline" id="delete_stamp_form" action="{% url 'stamp_delete' x.id %}" data-value="{{ x.id }}">
+          {% csrf_token %}
+          <button type="submit" id="stamp_delete" class="btn btn-danger">
+          Delete TimeStamp</button>
+        </form>
+    <p data-id="{{ x.id }}" class="m-0 mt-3">{% if x.forex.all %} {{ x.forex.all|length }} Entries {% else %} No Entries yet. {% endif %}</p>
+
+	</td></tr>
+  {% for entry in x.forex.all reversed%}
+    <tr id="{{ entry.entry_id }}" data-stamp-id="{{ x.id }}">
+      <td class="market">{{ entry.pair }}</td>
+      <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">{{ entry.get_option_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_option_display }}</span>{% endif %}</td>
+      <td class="span">August 23, 2019 19:18</td>
+      <td class="span">August 23, 2019</td>
+      <td>{{ entry.reasons }}</td>
+      <td>{{ entry.lessons }}</td>
+      <td class="span">{{ entry.price }}</td>
+      <td class="span">{{ entry.SL }}</td>
+      <td class="span">{{ entry.TP }}</td>
+      <td class="span">{{ entry.rMultiple }} R</td>
+      <td>
+        <form id="delete_form" action="{% url 'forex_d' entry.entry_id %}" data-stamp="{{ x.id }}" data-value="{{ entry.entry_id }}">
+          {% csrf_token %}
+          <button type="submit" id="entry_delete" class="btn btn-danger">
+          X</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    {% endfor %}
+</tr>
+{% empty %}
+<tr class="text-center"> No Timestamps </tr>
+    {% endfor %}
+  </tbody>
+</table>

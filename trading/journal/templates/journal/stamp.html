@@ -1,0 +1,13 @@
+<tr id="{{ stamp.id }}" data-stamp-id="{{ stamp.id }}">
+  		<td colspan="{% if stamp.option == 'forex' %}11{% else %}8{% endif %}" class="text-center">
+  		<h2>{{ date }}</h2>
+  		<button id="modal" value="{{ stamp.id }}" class="btn btn-info">
+		Create New Trade Entry</button>
+		<form class="d-inline" id="delete_stamp_form" action="{% url 'stamp_delete' stamp.id %}" data-value="{{ stamp.id }}">
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+          <button type="submit" id="stamp_delete" class="btn btn-danger">
+          Delete TimeStamp</button>
+        </form>
+    <p data-id="{{ stamp.id }}" class="m-0 mt-3">0 Entries</p>
+
+	</td></tr>

@@ -1,0 +1,19 @@
+<tr id="{{ entry.entry_id }}" data-stamp-id="{{ entry.stamp }}">
+      <td class="market">{{ entry.pair }}</td>
+      <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">Buy</span>{% else %}<span class="badge badge-danger">Sell</span>{% endif %}</td>
+      <td class="span">August 23, 2019 19:18</td>
+      <td class="span">August 23, 2019</td>
+      <td>{{ entry.reasons }}</td>
+      <td>{{ entry.lessons }}</td>
+      <td class="span">{{ entry.price }}</td>
+      <td class="span">{{ entry.SL }}</td>
+      <td class="span">{{ entry.TP }}</td>
+      <td class="span">{{ entry.rMultiple }} R</td>
+      <td>
+        <form id="delete_form" action="{% url 'forex_d' entry.entry_id %}" data-stamp="{{ entry.stamp }}" data-value="{{ entry.entry_id }}">
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+          <button type="submit" id="entry_delete" class="btn btn-danger">
+          X</button>
+        </form>
+        </td>
+</tr>

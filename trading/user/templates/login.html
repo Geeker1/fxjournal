@@ -1,0 +1,60 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'dashboard.css' %}">
+</head>
+<body>
+    <style type="text/css">
+    .alert-block > ul > li{
+        list-style: none !important;
+        color: black;
+    }
+    .alert-block > ul{
+        padding-left: 0px !important;
+        margin: 5px !important;
+    }
+</style>
+
+<div class="container">
+
+    <div class="row justify-content-center" style="margin-top:4rem;" id="log_me">
+        <div class="col-lg-5 col-md-6 col-sm-12">
+            <div class="card my-5" id="login">
+                <div class="card-header">
+                        <h4 class="text-center text-dark card-title">Login</h4>
+
+                </div>
+                <div class="card-body" id="log">
+
+                    <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form | crispy }}
+    <button class="btn btn-primary btn-block" type="submit">Login</button>
+</form>
+
+                </div>
+                <div class="card-footer text-center text-light">
+                    New to our site ? <a href="#">SignUp</a>
+
+                </div>
+
+            </div>
+            <div class="text-center py-2">
+                <small>
+                    <a href="#" class="text-light">Forgot your password?</a>
+                </small>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

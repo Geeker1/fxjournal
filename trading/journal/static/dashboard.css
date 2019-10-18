@@ -1,0 +1,135 @@
+body{
+	margin: 0;
+	/*position: relative;*/
+}
+
+body
+{
+	margin: 0;
+	padding: 0;
+	font-family: 'Slabo 27px', serif !important;
+}
+
+h1, h2, h3,h4,h5,h6{
+	font-family: 'Oswald', sans-serif !important;
+	letter-spacing: 1px;
+}
+
+tr{
+	font-size: 20px !important;
+}
+
+#nav h3{
+	font-weight: bold !important;
+}
+
+th{
+	text-align: center;
+}
+
+.modal-bg{
+	background-color: #D3D7CFFF;
+	height: 100%;
+	width: 100%;
+	position: relative;
+}
+
+/*.modal-content form{
+	padding: 30px;
+	background-color: #fff;
+	color: #000;
+}*/
+
+#fx_wrap{
+	padding: 30px;
+	background-color: #fff;
+	color: #000;
+}
+
+#span{
+	float: right;
+}
+
+#span:hover{
+	cursor: pointer;
+}
+
+#myModal{
+	position: fixed;
+	display: none;
+	z-index: 20000;
+	width: 100%;
+	padding: 20px;
+	height: 100%;
+	/*max-height: 100vh;*/
+	background-color: rgba(0, 0, 0, 0.4);
+	overflow-y: auto;
+	/*height: 100%;*/
+}
+
+.modal-content{
+	display: flex;
+	background-color: transparent;
+	color: #fff;
+	flex-direction: column;
+	align-items: center;
+	border: none;
+}
+
+.btn{
+	font-size: 18px !important;
+}
+
+table{
+	margin-bottom: 0 !important;
+}
+
+td.span{
+	text-align: center;
+}
+
+td.market{
+	font-weight: bold;
+}
+
+h2{
+	font-weight: bold;
+}
+
+.option-heading{
+	padding-top: 100px;
+	margin-bottom: 20px;
+	text-align: center;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.nav{
+	padding: 20px;
+	display: flex;
+	justify-content: space-around;
+	background-color: #2E3436FF;
+	color: #fff;
+	align-items: center;
+}
+
+
+.footer-nav{
+	height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #2E3436FF;
+	color: #fff;
+	flex-direction: column;
+	font-size: 18px !important;
+}
+
+.footer-nav p{
+	margin: 0;
+}
+
+
+
+

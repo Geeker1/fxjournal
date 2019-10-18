@@ -1,0 +1,16 @@
+<tr id="{{ entry.entry_id }}" data-stamp-id="{{ entry.stamp }}">
+      <td class="market">{{ entry.pair }}</td>
+      <td>{{ entry.time }}</td>
+      <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">Buy</span>{% else %}<span class="badge badge-danger">Sell</span>{% endif %}</td>
+      <td><p>{{ entry.reasons }}</p></td>
+      <td class="span">{% if entry.result == "w" %}<span class="badge badge-success">Win</span>{% else %}<span class="badge badge-danger">Sell</span>{% endif %}</td>
+      <td><p>{{ entry.lessons }}</p></td>
+      <td>{{ entry.payout }}%</td>
+      <td>
+        <form id="delete_form" action="{% url 'binary_d' entry.entry_id %}" data-stamp="{{ entry.stamp }}" data-value="{{ entry.entry_id }}">
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+          <button type="submit" id="entry_delete" class="btn btn-danger">
+          X</button>
+        </form>
+        </td>
+    </tr>

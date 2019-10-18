@@ -1,0 +1,188 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content= "width=device-width, initial-scale=1.0">
+	<title>Dashboard</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'dashboard.css' %}">
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Slabo+27px&display=swap" rel="stylesheet">
+</head>
+<body>
+	{% include 'includes/forms.html' %}
+	<nav class="nav fixed-top" id="nav">
+		<h3>{% if option == 'binary' %}Binary Option{% else %}Forex{% endif %}</h3>
+		<button id="timestamp" class="btn btn-info" name="timestamp">
+		Create New TimeStamp
+	</button>
+
+	</nav>
+  <div>
+</div>
+  {% if option == 'binary' %}
+  {% include 'includes/binary_table.html' %}
+  {% elif option == 'forex' %}
+  {% include 'includes/fx_table.html' %}
+  {% endif %}
+  <footer class="footer">
+    <nav class="footer-nav">
+      <p>Developed and Designed by <strong>Ibaakee Ledum</strong> @ Froxine Tech</p>
+      <p class="mt-1">All Rights Reserved <small>(c)</small> 2019</p>
+    </nav>
+  </footer>
+	<script type="text/javascript" src="{% static 'axios.min.js' %}"></script>
+	<script type="text/javascript">
+		var modal = document.getElementById("myModal");
+    var timeStampBtn = document.getElementById("timestamp");
+    var entryBtn = document.querySelectorAll("button#modal");
+    var span = document.getElementById("span");
+    var fx = document.forms.namedItem("trading_form");
+    var stamp = document.forms.namedItem("stamp_form");
+    var dForm = document.querySelectorAll("form#delete_form");
+    var stampForm = document.querySelectorAll("form#delete_stamp_form");
+
+    setHandlers(entryBtn);
+    setDeleteFormHandler()
+    setDeleteStampHandler()
+
+    function setDeleteStamp(e) {
+      let data = new FormData(e.target);
+      axios({
+        method: "delete",
+        url: e.target.action,
+        data: data,
+        headers:{
+          'X-CSRFToken': data.get("csrfmiddlewaretoken")
+        }
+      }).then((response)=>{
+        var row = document.querySelectorAll(`tr[data-stamp-id='${e.target.dataset.value}']`);
+        row.forEach((element)=>element.remove())
+      }).catch((response)=>{
+        console.log(response)
+      })
+      e.preventDefault();
+    }
+
+
+    function setDeleteHandler(e) {
+      let data = new FormData(e.target);
+      axios({
+        method: "delete",
+        url: e.target.action,
+        data: data,
+        headers:{
+          'X-CSRFToken': data.get("csrfmiddlewaretoken")
+        }
+      }).then((response)=>{
+        var row = document.getElementById(e.target.dataset.value)
+        var text = document.querySelector(`p[data-id='${e.target.dataset.stamp}']`)
+        var no = parseInt(text.innerText.split(" ")[0])
+        var val = no - 1
+        if (val === 0){
+          text.innerText = "No Entries yet."
+        }
+        else{
+          text.innerText = `${val} Entries`
+        }
+        row.remove()
+      }).catch((response)=>{
+        console.log(response)
+      })
+      e.preventDefault();
+    }
+
+    function setDeleteFormHandler() {
+      dForm.forEach((element)=>{
+        element.addEventListener('submit', (e)=>setDeleteHandler(e))
+      })
+    }
+
+    function setDeleteStampHandler(){
+      stampForm.forEach((element)=>{
+        element.addEventListener('submit', (e)=>setDeleteStamp(e))
+      })
+    }
+
+    function btnEvent(e){
+      fx.querySelectorAll("input#id_stamp")[0].value = e.target.value
+      stamp.style = "display:none;";
+      fx.style = "display:block;";
+      modal.style = "display:flex;";
+    }
+
+    function setHandlers(button) {
+      for(obj of button){
+      obj.addEventListener('click',(e)=>{
+        btnEvent(e);
+      })
+    }
+    }
+
+    timeStampBtn.addEventListener('click', (e)=>{
+      fx.style = "display:none;";
+      stamp.style = "display:block;"
+      modal.style = "display:flex;";
+    })
+
+    span.onclick = function(event){
+      modal.style = "display:none;"
+    }
+
+    stamp.onsubmit = function(e){
+      let data = new FormData(e.target);
+      stamp.reset()
+      axios({
+        method: 'post',
+        url: this.action,
+        data: data
+      }).then((response)=>{
+        console.log(response.data)
+        modal.style = "display:none;"
+        setTimeout(()=>{
+          var table_body  = document.getElementById("table-body");
+          table_body.insertAdjacentHTML("afterBegin",response.data["template"]);
+          var stamp = document.querySelector(`tr[id='${response.data.id}']`);
+          stamp.querySelector("#modal").addEventListener('click', (e)=>btnEvent(e));
+          stamp.querySelector("form").addEventListener('submit', (e)=>setDeleteStamp(e));
+        }, 500)
+
+      }).catch(({response})=>{
+        console.log(response.data)
+      })
+      e.preventDefault();
+    }
+
+    fx.onsubmit = function(e){
+      let data = new FormData(e.target);
+      fx.reset()
+      axios({
+        method: 'post',
+        url: this.action,
+        data: data
+      }).then((response)=>{
+        var stamp_element  = document.getElementById(response.data["stamp"]);
+        modal.style = "display:none;"
+        setTimeout(()=>{
+          stamp_element.insertAdjacentHTML("afterEnd",response.data["template"]);
+          var row = document.getElementById(response.data["entry_id"])
+          var text = document.querySelector(`p[data-id='${response.data["stamp"]}']`)
+          var no = parseInt(text.innerText.split(" ")[0])
+          if (isNaN(no)){
+            text.innerText = "1 Entries"
+          }
+          else{
+            text.innerText = `${no + 1} Entries`
+          }
+          row.querySelector("form#delete_form").addEventListener('submit',(e)=>setDeleteHandler(e))
+        }, 1000);
+      }).catch(({response})=>{
+        console.log(response.data)
+      })
+      e.preventDefault();
+    }
+	</script>
+</body>
+</html>
