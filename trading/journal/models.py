@@ -37,9 +37,6 @@ class BaseEntry(models.Model):
     def __str__(self):
         return f"Entry for {self.pair} @ {self.stamp.date}"
 
-    class Meta:
-        abstract = True
-
 
 class ForexEntry(BaseEntry):
     timeStart = models.DateTimeField()
