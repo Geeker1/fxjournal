@@ -31,8 +31,6 @@ class BaseEntry(models.Model):
     CHOICE = (('b', 'Buy'), ('s', 'Sell'))
     pair = models.CharField(max_length=7, )
     option = models.CharField(choices=CHOICE, max_length=1, default='b')
-    reasons = models.TextField()
-    lessons = models.TextField()
 
     def __str__(self):
         return f"Entry for {self.pair} @ {self.stamp.date}"
@@ -51,8 +49,35 @@ class ForexEntry(BaseEntry):
     )
 
 
-class Blog(models.Model):
-    name = models.CharField(max_length=12)
+class BinaryEntry(BaseEntry):
+
+    CHOICE = (
+        ('w', 'Win'),
+        ('l', 'Lose'),
+    )
+    payout = models.IntegerField()
+    result = models.CharField(choices=CHOICE, max_length=1)
+    time = models.TimeField()
+    stamp = models.ForeignKey(
+        TimeStamp, on_delete=models.CASCADE,
+        related_name='binary'
+    )
+
+
+class Reason(models.Model):
+    entry = models.OneToOneField(
+        'BaseEntry',
+        on_delete=models.CASCADE,
+        related_name='reason'
+    )
+
+
+class Lesson(models.Model):
+    entry = models.OneToOneField(
+        'BaseEntry',
+        on_delete=models.CASCADE,
+        related_name='lesson'
+    )
 
 
 class Content(models.Model):
@@ -94,17 +119,3 @@ class Image(ItemBase):
 class Text(ItemBase):
     text = models.TextField()
 
-
-class BinaryEntry(BaseEntry):
-
-    CHOICE = (
-        ('w', 'Win'),
-        ('l', 'Lose'),
-    )
-    payout = models.IntegerField()
-    result = models.CharField(choices=CHOICE, max_length=1)
-    time = models.TimeField()
-    stamp = models.ForeignKey(
-        TimeStamp, on_delete=models.CASCADE,
-        related_name='binary'
-    )
