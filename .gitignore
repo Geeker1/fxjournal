@@ -55,7 +55,7 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
-test.sqlite3
+trading/test.sqlite3
 # Flask stuff:
 instance/
 .webassets-cache
