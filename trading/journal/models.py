@@ -81,9 +81,6 @@ class Lesson(models.Model):
 
 
 class Content(models.Model):
-    tag = models.SlugField()
-    blog = models.ForeignKey(
-        'Blog', related_name='tags', on_delete=models.CASCADE)
     content_type = models.ForeignKey(
         ContentType,
         limit_choices_to={
