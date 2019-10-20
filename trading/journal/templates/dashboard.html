@@ -15,6 +15,7 @@
 	{% include 'includes/forms.html' %}
 	<nav class="nav fixed-top" id="nav">
 		<h3>{% if option == 'binary' %}Binary Option{% else %}Forex{% endif %}</h3>
+    {% comment %}<h6>{% if user.is_authenticated %}{{ user }}{% endif %}</h6>{% endcomment %}
 		<button id="timestamp" class="btn btn-info" name="timestamp">
 		Create New TimeStamp
 	</button>
@@ -34,8 +35,10 @@
     </nav>
   </footer>
 	<script type="text/javascript" src="{% static 'axios.min.js' %}"></script>
-	<script type="text/javascript">
-		var modal = document.getElementById("myModal");
+  <script type="text/javascript">
+    // SET ALL VARIABLES
+
+    var modal = document.getElementById("myModal");
     var timeStampBtn = document.getElementById("timestamp");
     var entryBtn = document.querySelectorAll("button#modal");
     var span = document.getElementById("span");
@@ -44,9 +47,30 @@
     var dForm = document.querySelectorAll("form#delete_form");
     var stampForm = document.querySelectorAll("form#delete_stamp_form");
 
-    setHandlers(entryBtn);
-    setDeleteFormHandler()
-    setDeleteStampHandler()
+
+  </script>
+  <script type="text/javascript">
+    // Set Togglers and Form Display properties
+
+    function btnEvent(e){
+      fx.querySelectorAll("input#id_stamp")[0].value = e.target.value
+      stamp.style = "display:none;";
+      fx.style = "display:block;";
+      modal.style = "display:flex;";
+    }
+
+    timeStampBtn.addEventListener('click', (e)=>{
+      fx.style = "display:none;";
+      stamp.style = "display:block;"
+      modal.style = "display:flex;";
+    })
+
+    span.onclick = function(event){
+      modal.style = "display:none;"
+    }
+  </script>
+  <script type="text/javascript">
+    // SET ALL HANDLER FUNCTIONS
 
     function setDeleteStamp(e) {
       let data = new FormData(e.target);
@@ -65,8 +89,6 @@
       })
       e.preventDefault();
     }
-
-
     function setDeleteHandler(e) {
       let data = new FormData(e.target);
       axios({
@@ -93,7 +115,6 @@
       })
       e.preventDefault();
     }
-
     function setDeleteFormHandler() {
       dForm.forEach((element)=>{
         element.addEventListener('submit', (e)=>setDeleteHandler(e))
@@ -105,31 +126,19 @@
         element.addEventListener('submit', (e)=>setDeleteStamp(e))
       })
     }
-
-    function btnEvent(e){
-      fx.querySelectorAll("input#id_stamp")[0].value = e.target.value
-      stamp.style = "display:none;";
-      fx.style = "display:block;";
-      modal.style = "display:flex;";
-    }
-
     function setHandlers(button) {
       for(obj of button){
-      obj.addEventListener('click',(e)=>{
-        btnEvent(e);
-      })
+        obj.addEventListener('click',(e)=>{
+          btnEvent(e);
+        })
+      }
     }
-    }
-
-    timeStampBtn.addEventListener('click', (e)=>{
-      fx.style = "display:none;";
-      stamp.style = "display:block;"
-      modal.style = "display:flex;";
-    })
-
-    span.onclick = function(event){
-      modal.style = "display:none;"
-    }
+    setHandlers(entryBtn);
+    setDeleteFormHandler()
+    setDeleteStampHandler()
+  </script>
+  <script type="text/javascript">
+    // SET FORM SUBMIT EVENTS FOR TIMESTAMPs AND ENTRY( Binary / Forex )
 
     stamp.onsubmit = function(e){
       let data = new FormData(e.target);
@@ -183,6 +192,7 @@
       })
       e.preventDefault();
     }
-	</script>
+  </script>
+
 </body>
 </html>

@@ -82,6 +82,8 @@ def stamp(request, id=None):
 @api_view(['POST'])
 def forex(request):
     if request.method == "POST":
+        print(request.POST)
+        print(request.data)
         serializer = ForexSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -89,7 +91,6 @@ def forex(request):
             context = Context(
                 {"entry": serializer.data, "csrf_token": csrf_token})
             template = fx_template.render(context=context)
-            print(serializer.data)
             s = dict(serializer.data)
             s.update({"template": template})
             return Response(data=s)
