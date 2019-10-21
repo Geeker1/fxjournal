@@ -1,5 +1,15 @@
 from django import forms
-from .models import TimeStamp, ForexEntry, BinaryEntry
+from .models import TimeStamp, ForexEntry, BinaryEntry, Reason, Lesson
+
+
+class ReasonForm(forms.Form):
+    r_text = forms.CharField(label='Reasons', widget=forms.Textarea)
+    r_image = forms.FileField(label='Reason Image')
+
+
+class LessonForm(forms.Form):
+    l_text = forms.CharField(label='Lessons', widget=forms.Textarea)
+    l_image = forms.FileField(label='Lesson Image')
 
 
 class StampForm(forms.ModelForm):

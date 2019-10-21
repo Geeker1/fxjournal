@@ -25,12 +25,26 @@ class TimeStamp(models.Model):
         ordering = ['-date']
 
 
+class BaseManager(models.Manager):
+    arguments = ('r_text', 'l_text', 'r_image', 'l_image')
+
+    def create_entry(self, **kwargs):
+        r_text, l_text, r_image, l_image = [
+            kwargs.pop(val) for val in self.arguments]
+
+        entry = self.model.objects.create(**kwargs)
+        Reason.objects.create(image=r_image, text=r_text, entry=entry)
+        Lesson.objects.create(image=l_image, text=l_text, entry=entry)
+        return entry
+
+
 class BaseEntry(models.Model):
     entry_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     CHOICE = (('b', 'Buy'), ('s', 'Sell'))
     pair = models.CharField(max_length=7, )
     option = models.CharField(choices=CHOICE, max_length=1, default='b')
+    objects = BaseManager()
 
     def __str__(self):
         return f"Entry for {self.pair} @ {self.stamp.date}"
@@ -65,16 +79,10 @@ class BinaryEntry(BaseEntry):
 
 
 class ContentBase(models.Model):
-
-    def user_directory_path(self):
-        return 'user_{0}/contents'.format(self.owner.username)
-
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     image = models.ImageField(
-        upload_to=user_directory_path, blank=True, null=True)
-    external_link = models.URLField(blank=True, null=True)
+        upload_to='user_directory_path', blank=True, null=True)
     text = models.TextField()
 
     class Meta:

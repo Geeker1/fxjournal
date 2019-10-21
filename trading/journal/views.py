@@ -1,15 +1,21 @@
+# Django Imports
 from django.shortcuts import render
-from .forms import ForexEntryForm, BinaryEntryForm, StampForm
-from .models import ForexEntry, BinaryEntry, TimeStamp
-from .serializers import StampSerializer, BinarySerializer, ForexSerializer
-from rest_framework.decorators import api_view
-from rest_framework import status
-from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.template import Context, engines
 from django.template.backends.utils import csrf_token_lazy
 from django.utils.dateparse import parse_date
+
+# Dependency Imports
+from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.response import Response
+
+# Application Imports
+from .forms import ForexEntryForm, BinaryEntryForm, StampForm,\
+    ReasonForm, LessonForm
+from .models import ForexEntry, BinaryEntry, TimeStamp
+from .serializers import StampSerializer, BinarySerializer, ForexSerializer
 
 
 LINK_FOREX = "journal/fx.html"
@@ -44,13 +50,15 @@ def dashboard(request, option):
         option=option,
         owner=request.user
     )
-    t_form = StampForm(initial={'option': option, 'owner': request.user.id})
-    return render(
-        request, 'dashboard.html',
-        context={
-            'form': form, 'option': option, 't_form': t_form,
-            "stamps": timestamps
-        })
+    context = {
+        'form': form, 'option': option,
+        't_form': StampForm(
+            initial={'option': option, 'owner': request.user.id}),
+        "stamps": timestamps,
+        'l_form': LessonForm(),
+        'r_form': ReasonForm()
+    }
+    return render(request, 'dashboard.html', context=context)
 
 
 @api_view(['POST', 'DELETE'])
@@ -64,60 +72,48 @@ def stamp(request, id=None):
             date = parse_date(stamp.data["date"]).strftime('%B %d, %Y')
             context = Context(
                 {"stamp": stamp.data, "csrf_token": csrf_token, 'date': date})
-            template = stamp_template.render(context=context)
-            s = dict(stamp.data)
-            s.update({"template": template})
-            return Response(data=s)
+            data = dict(
+                stamp.data,
+                template=stamp_template.render(context=context))
+            return Response(data=data)
         return Response(stamp.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
         try:
-            stamp = TimeStamp.objects.get(id=id)
-            stamp.delete()
+            TimeStamp.objects.get(id=id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except TimeStamp.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['POST'])
-def forex(request):
+def post_wrapper(request, serializer_class, template):
     if request.method == "POST":
-        print(request.POST)
-        print(request.data)
-        serializer = ForexSerializer(data=request.data)
+        serializer = serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             csrf_token = csrf_token_lazy(request)
             context = Context(
                 {"entry": serializer.data, "csrf_token": csrf_token})
-            template = fx_template.render(context=context)
-            s = dict(serializer.data)
-            s.update({"template": template})
-            return Response(data=s)
+            data = dict(
+                serializer.data,
+                template=template.render(context=context))
+            return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def forex(request):
+    return post_wrapper(request, ForexSerializer, fx_template)
 
 
 @api_view(['POST'])
 def binary(request):
-    if request.method == "POST":
-        serializer = BinarySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            csrf_token = csrf_token_lazy(request)
-            context = Context(
-                {"entry": serializer.data, "csrf_token": csrf_token})
-            template = binary_template.render(context=context)
-            print(serializer.data)
-            s = dict(serializer.data)
-            s.update({"template": template})
-            return Response(data=s)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return post_wrapper(request, BinarySerializer, binary_template)
 
 
-@api_view(['DELETE', 'PUT'])
-def forex_detail(request, id):
+def detail_wrapper(request, entry, serializer_class, id):
     try:
-        entry = ForexEntry.objects.get(entry_id=id)
+        entry = entry.objects.get(entry_id=id)
     except ForexEntry.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -126,7 +122,7 @@ def forex_detail(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     elif request.method == 'PUT':
-        serializer = ForexSerializer(entry, data=request.data)
+        serializer = serializer_class(entry, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data)
@@ -134,23 +130,10 @@ def forex_detail(request, id):
 
 
 @api_view(['DELETE', 'PUT'])
+def forex_detail(request, id):
+    return detail_wrapper(request, ForexEntry, ForexSerializer, id)
+
+
+@api_view(['DELETE', 'PUT'])
 def binary_detail(request, id):
-    try:
-        entry = BinaryEntry.objects.get(entry_id=id)
-    except BinaryEntry.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'DELETE':
-        entry.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    elif request.method == 'PUT':
-        serializer = BinarySerializer(entry, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-def stamp_delete(request, pk):
-    pass
+    return detail_wrapper(request, BinaryEntry, BinarySerializer, id)

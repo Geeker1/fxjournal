@@ -39,9 +39,9 @@
       <td class="market">{{ entry.pair }}</td>
       <td>{{ entry.time|date:"G:i:s" }}</td>
       <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">{{ entry.get_option_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_option_display }}</span>{% endif %}</td>
-      <td><p>{{ entry.reasons }}</p></td>
+      <td><p>{{ entry.reason.text }}</p></td>
       <td class="span">{% if entry.result == "w" %}<span class="badge badge-success">{{ entry.get_result_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_result_display }}</span>{% endif %}</td>
-      <td><p>{{ entry.lessons }}</p></td>
+      <td><p>{{ entry.lesson.text }}</p></td>
       <td>{{ entry.payout }}%</td>
       <td>
         <form id="delete_form" action="{% url 'binary_d' entry.entry_id %}" data-stamp="{{ x.id }}" data-value="{{ entry.entry_id }}">
