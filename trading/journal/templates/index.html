@@ -7,25 +7,26 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
-	<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
-	<link rel="stylesheet" href="{% static 'index.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/index.css' %}">
 	<link href="https://fonts.googleapis.com/css?family=Oswald|Slabo+27px&display=swap" rel="stylesheet">
 
 </head>
 <body>
 	<div class="app">
+		<div class="app-second"></div>
 		<div class="wrapper">
-		<h1>Welcome back "{{ request.user }}"</h1>
-		<p>Which journal do you want to move to ?</p>
-		<div class="buttons">
-			<a href="{% url 'dashboard' option='forex' %}" class="btn forex btn-info">
-				Forex
-			</a>
-			<a href="{% url 'dashboard' option='binary' %}" class="btn binary btn-info">
-				Binary Options
-			</a>
+			<h1 class="zoomIn h">Welcome back "{{ request.user }}"</h1>
+			<p>Which Trading journal do you want to move to ?</p>
+			<div class="buttons">
+				<a href="{% url 'dashboard' option='forex' %}" class="btn mx-3 forex btn-danger">
+					Forex Market
+				</a>
+				<a href="{% url 'dashboard' option='binary' %}" class="btn mx-3 binary btn-success">
+					Binary Options
+				</a>
+			</div>
 		</div>
-	</div>
 	</div>
 
 </body>

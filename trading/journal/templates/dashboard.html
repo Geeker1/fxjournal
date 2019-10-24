@@ -7,18 +7,22 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content= "width=device-width, initial-scale=1.0">
 	<title>Dashboard</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'bootstrap.min.css' %}">
-	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'dashboard.css' %}">
+	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/dashboard.css' %}">
   <link href="https://fonts.googleapis.com/css?family=Oswald|Slabo+27px&display=swap" rel="stylesheet">
+
 </head>
 <body>
 	{% include 'includes/forms.html' %}
-	<nav class="nav fixed-top" id="nav">
+	<nav class="nav fixed-top m" id="nav">
 		<h3>{% if option == 'binary' %}Binary Option{% else %}Forex{% endif %}</h3>
     {% comment %}<h6>{% if user.is_authenticated %}{{ user }}{% endif %}</h6>{% endcomment %}
 		<button id="timestamp" class="btn btn-info" name="timestamp">
-		Create New TimeStamp
+		Create New TimeStamp <span><img class="ml-1" height="30" width="30" src="{% static 'img/create.svg' %}" alt=""></span>
 	</button>
+  <a href="{% url 'logout' %}" class="btn btn-danger float-right" type="">
+  Logout
+</a>
 
 	</nav>
   <div>
@@ -34,18 +38,24 @@
       <p class="mt-1">All Rights Reserved <small>(c)</small> 2019</p>
     </nav>
   </footer>
-	<script type="text/javascript" src="{% static 'axios.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/axios.min.js' %}"></script>
   <script type="text/javascript">
     // SET ALL VARIABLES
 
     var modal = document.getElementById("myModal");
+    var alertModal = document.getElementById("alertModal");
+    var imageModal = document.getElementById("imageModal");
+    var imageBtnTrigger = document.querySelectorAll("button#image");
+    var imageCloseTrigger = document.getElementById("imageClose");
     var timeStampBtn = document.getElementById("timestamp");
-    var entryBtn = document.querySelectorAll("button#modal");
+    var newEntryEvent = document.querySelectorAll("button#modal");
     var span = document.getElementById("span");
-    var fx = document.forms.namedItem("trading_form");
-    var stamp = document.forms.namedItem("stamp_form");
+    var newEntryForm = document.forms.namedItem("trading_form");
+    var newStampForm = document.forms.namedItem("stamp_form");
     var dForm = document.querySelectorAll("form#delete_form");
     var stampForm = document.querySelectorAll("form#delete_stamp_form");
+    var alertBox = document.getElementById("alertBox");
+    var alertButtons = document.querySelectorAll("#alertBox button");
 
 
   </script>
@@ -53,17 +63,21 @@
     // Set Togglers and Form Display properties
 
     function btnEvent(e){
-      fx.querySelectorAll("input#id_stamp")[0].value = e.target.value
-      stamp.style = "display:none;";
-      fx.style = "display:block;";
+      newEntryForm.querySelectorAll("input#id_stamp")[0].value = e.target.value
+      newStampForm.style = "display:none;";
+      newEntryForm.style = "display:block;";
       modal.style = "display:flex;";
     }
 
     timeStampBtn.addEventListener('click', (e)=>{
-      fx.style = "display:none;";
-      stamp.style = "display:block;"
+      newEntryForm.style = "display:none;";
+      newStampForm.style = "display:block;"
       modal.style = "display:flex;";
     })
+
+    imageCloseTrigger.onclick = function(event){
+      imageModal.style = "display:none;"
+    }
 
     span.onclick = function(event){
       modal.style = "display:none;"
@@ -72,7 +86,10 @@
   <script type="text/javascript">
     // SET ALL HANDLER FUNCTIONS
 
+    // SET ALL DELETE FUNCTIONS
+
     function setDeleteStamp(e) {
+      e.preventDefault();
       let data = new FormData(e.target);
       axios({
         method: "delete",
@@ -89,6 +106,8 @@
       })
       e.preventDefault();
     }
+
+
     function setDeleteHandler(e) {
       let data = new FormData(e.target);
       axios({
@@ -99,9 +118,9 @@
           'X-CSRFToken': data.get("csrfmiddlewaretoken")
         }
       }).then((response)=>{
-        var row = document.getElementById(e.target.dataset.value)
-        var text = document.querySelector(`p[data-id='${e.target.dataset.stamp}']`)
-        var no = parseInt(text.innerText.split(" ")[0])
+        var row = document.getElementById(e.target.dataset.value);
+        var text = document.querySelector(`p[data-id='${e.target.dataset.stamp}']`);
+        var no = parseInt(text.innerText.split(" ")[0]);
         var val = no - 1
         if (val === 0){
           text.innerText = "No Entries yet."
@@ -115,34 +134,71 @@
       })
       e.preventDefault();
     }
-    function setDeleteFormHandler() {
-      dForm.forEach((element)=>{
-        element.addEventListener('submit', (e)=>setDeleteHandler(e))
+
+    function setAlertButtonEvent(func, event){
+      alertModal.style = "display:flex;";
+      alertButtons.forEach((element)=>{
+        element.onclick = function(e){
+          var option = e.target.dataset.option
+          if (option === "no"){
+            alertModal.style = "display:none;";
+          }
+          else if(option === "yes"){
+            alertModal.style = "display:none;";
+            func(event)
+          }
+        }
       })
     }
 
-    function setDeleteStampHandler(){
-      stampForm.forEach((element)=>{
-        element.addEventListener('submit', (e)=>setDeleteStamp(e))
+    function deleteWrapper(func, elementTag){
+      elementTag.forEach((element)=>{
+        element.addEventListener('submit', (e)=>{
+          setAlertButtonEvent(func, e);
+          e.preventDefault();
+          })
       })
     }
-    function setHandlers(button) {
-      for(obj of button){
-        obj.addEventListener('click',(e)=>{
-          btnEvent(e);
+
+    function setHandlerWrapper(func, element, event) {
+      element.forEach((el)=>{
+        el.addEventListener(event,(e)=>{
+          func(e)
         })
-      }
+      })
     }
-    setHandlers(entryBtn);
-    setDeleteFormHandler()
+
+    function setDeleteEntryHandler() {
+      deleteWrapper(setDeleteHandler, dForm);
+    }
+
+    function setDeleteStampHandler(){
+      deleteWrapper(setDeleteStamp, stampForm);
+    }
+
+    function imageEvent(event){
+      imageModal.style = "display:flex;"
+    }
+
+    function setImageHandler(button){
+      setHandlerWrapper(imageEvent, button, 'click');
+    }
+
+    function setNewEntryHandler(button) {
+      setHandlerWrapper(btnEvent, button, 'click');
+    }
+
+    setNewEntryHandler(newEntryEvent);
+    setDeleteEntryHandler()
     setDeleteStampHandler()
+    setImageHandler(imageBtnTrigger)
   </script>
   <script type="text/javascript">
     // SET FORM SUBMIT EVENTS FOR TIMESTAMPs AND ENTRY( Binary / Forex )
 
-    stamp.onsubmit = function(e){
+    newStampForm.onsubmit = function(e){
       let data = new FormData(e.target);
-      stamp.reset()
+      newStampForm.reset()
       axios({
         method: 'post',
         url: this.action,
@@ -155,7 +211,10 @@
           table_body.insertAdjacentHTML("afterBegin",response.data["template"]);
           var stamp = document.querySelector(`tr[id='${response.data.id}']`);
           stamp.querySelector("#modal").addEventListener('click', (e)=>btnEvent(e));
-          stamp.querySelector("form").addEventListener('submit', (e)=>setDeleteStamp(e));
+          stamp.querySelector("form").addEventListener('submit', (e)=>{
+            e.preventDefault();
+            setAlertButtonEvent(setDeleteStamp, e)
+          });
         }, 500)
 
       }).catch(({response})=>{
@@ -164,9 +223,13 @@
       e.preventDefault();
     }
 
-    fx.onsubmit = function(e){
+    function onEntrySuccess(argument) {
+      // body...
+    }
+
+    newEntryForm.onsubmit = function(e){
       let data = new FormData(e.target);
-      fx.reset()
+      newEntryForm.reset()
       axios({
         method: 'post',
         url: this.action,
@@ -185,8 +248,12 @@
           else{
             text.innerText = `${no + 1} Entries`
           }
-          row.querySelector("form#delete_form").addEventListener('submit',(e)=>setDeleteHandler(e))
-        }, 1000);
+          row.querySelector("form#delete_form").addEventListener(
+            'submit',(e)=>{
+              e.preventDefault();
+              setAlertButtonEvent(setDeleteHandler, e)
+            })
+        }, 500);
       }).catch(({response})=>{
         console.log(response.data)
       })

@@ -15,6 +15,11 @@ h1, h2, h3,h4,h5,h6{
 	letter-spacing: 1px;
 }
 
+.btn:focus, .btn:active{
+	outline: none !important;
+	box-shadow: none !important;
+}
+
 tr{
 	font-size: 20px !important;
 }
@@ -23,8 +28,13 @@ tr{
 	font-weight: bold !important;
 }
 
-th{
-	text-align: center;
+th, td{
+	text-align: center !important;
+}
+
+td.market{
+	padding-left: 0px;
+	padding-right: 0px;
 }
 
 .modal-bg{
@@ -46,12 +56,39 @@ th{
 	color: #000;
 }
 
-#span{
+#span, #imageClose{
 	float: right;
+	font-size: 25px;
 }
 
-#span:hover{
+#span:hover, #imageClose:hover{
 	cursor: pointer;
+}
+
+#alertModal{
+	position: fixed;
+	display: none;
+	z-index: 20000;
+	width: 100%;
+	padding: 20px;
+	height: 100%;
+	/*max-height: 100vh;*/
+	background-color: rgba(0, 0, 0, 0.4);
+	overflow-y: auto;
+	/*height: 100%;*/
+}
+
+#imageModal{
+	position: fixed;
+	display: none;
+	z-index: 20000;
+	width: 100%;
+	padding: 20px;
+	height: 100%;
+	/*max-height: 100vh;*/
+	background-color: rgba(0, 0, 0, 0.6);
+	overflow-y: auto;
+	/*height: 100%;*/
 }
 
 #myModal{
@@ -129,7 +166,5 @@ h2{
 .footer-nav p{
 	margin: 0;
 }
-
-
 
 

@@ -1,11 +1,12 @@
-
+{% load static %}
 <section class="option-heading">
 <h2>Options Journal
 </h2>
-<a href="{% url 'dashboard' 'forex' %}" class="btn btn-success float-right" type="">
+<a href="{% url 'dashboard' 'forex' %}" class="btn btn-dark float-right" type="">
   Move to Forex journal
 </a>
 </section>
+
 <table class="table table-responsive-md table-dark">
   <thead>
     <tr>
@@ -25,12 +26,12 @@
   	<tr id="{{ x.id }}" data-stamp-id="{{ x.id }}">
   		<td colspan="8" class="text-center">
   		<h2>{{ x.date|date:"E d, Y" }}</h2>
-  		<button id="modal" value="{{ x.id }}" class="btn btn-info">
-		Create New Trade Entry</button>
+  		<button id="modal" title="New Trade Entry" value="{{ x.id }}" class="btn btn-info">
+		Create New Trade Entry <span><img class="ml-1" height="30" width="30" src="{% static 'img/add.svg' %}" alt=""></span></button>
 		<form class="d-inline" id="delete_stamp_form" action="{% url 'stamp_delete' x.id %}" data-value="{{ x.id }}">
           {% csrf_token %}
           <button type="submit" id="stamp_delete" class="btn btn-danger">
-          Delete TimeStamp</button>
+          Delete TimeStamp <span><img class="ml-1" height="30" width="30" src="{% static 'img/delete.svg' %}" alt=""></span></button>
         </form>
     <p data-id="{{ x.id }}" class="m-0 mt-3">{% if x.binary.all %} {{ x.binary.all|length }} Entries {% else %} No Entries yet. {% endif %}</p>
 	</td></tr>
@@ -39,9 +40,19 @@
       <td class="market">{{ entry.pair }}</td>
       <td>{{ entry.time|date:"G:i:s" }}</td>
       <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">{{ entry.get_option_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_option_display }}</span>{% endif %}</td>
-      <td><p>{{ entry.reason.text }}</p></td>
+      <td>
+        <p>{{ entry.reason.text }}</p>
+        <button class="btn btn-info" id="image" href="#">
+          View Image
+        </button>
+      </td>
       <td class="span">{% if entry.result == "w" %}<span class="badge badge-success">{{ entry.get_result_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_result_display }}</span>{% endif %}</td>
-      <td><p>{{ entry.lesson.text }}</p></td>
+      <td>
+        <p>{{ entry.lesson.text }}</p>
+        <button class="btn btn-info" id="image" href="#">
+          View Image
+        </button>
+      </td>
       <td>{{ entry.payout }}%</td>
       <td>
         <form id="delete_form" action="{% url 'binary_d' entry.entry_id %}" data-stamp="{{ x.id }}" data-value="{{ entry.entry_id }}">

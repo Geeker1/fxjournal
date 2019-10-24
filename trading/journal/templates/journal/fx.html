@@ -3,8 +3,18 @@
       <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">Buy</span>{% else %}<span class="badge badge-danger">Sell</span>{% endif %}</td>
       <td class="span">August 23, 2019 19:18</td>
       <td class="span">August 23, 2019</td>
-      <td>{{ entry.reason.text }}</td>
-      <td>{{ entry.lesson.text }}</td>
+      <td>
+        <p>{{ entry.reason.text }}</p>
+        <a class="btn btn-info" href="#">
+          View Image
+        </a>
+      </td>
+<td>
+        <p>{{ entry.lesson.text }}</p>
+        <a class="btn btn-info" href="#">
+          View Image
+        </a>
+      </td>
       <td class="span">{{ entry.price }}</td>
       <td class="span">{{ entry.SL }}</td>
       <td class="span">{{ entry.TP }}</td>

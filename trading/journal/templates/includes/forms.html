@@ -1,4 +1,33 @@
 {% load crispy_forms_tags %}
+{% load static %}
+<div id="alertModal">
+  <div class="modal-content container">
+    <div class="row w-100 justify-content-center">
+      <div id="alertBox" class="alert alert-danger text-center p-3 mt-5 col-sm-4" role="alert">
+        <h5 class="mb-4"><strong>Are you sure ?</strong></h5>
+        <button class="btn btn-danger" data-option="yes" type="">
+        Yes
+        </button>
+        <button class="btn btn-success" data-option="no" type="">
+        No
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="imageModal">
+  <div class="modal-content container">
+    <div class="row w-100 mt-5 pt-5 justify-content-center align-items-center">
+      <div class="col-sm-12">
+        <span class="float-right" id="imageClose"><strong>x</strong></span>
+        <img class="w-100" src="{% static 'img/chart.png' %}">
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div id="myModal">
   <style type="text/css">
     .asteriskField{

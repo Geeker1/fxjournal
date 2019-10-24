@@ -1,7 +1,8 @@
+{% load static %}
 <section class="option-heading">
 <h2>Forex Journal
 </h2>
-<a href="{% url 'dashboard' 'binary' %}" class="btn btn-success float-right" type="">
+<a href="{% url 'dashboard' 'binary' %}" class="btn btn-dark float-right" type="">
   Move to Options journal
 </a>
 </section>
@@ -28,23 +29,34 @@
   		<td colspan="11" class="text-center">
   		<h2>{{ x.date|date:"E d, Y" }}</h2>
   		<button id="modal" value="{{ x.id }}" class="btn btn-info">
-		Create New Trade Entry</button>
+		Create New Trade Entry <span><img class="ml-1" height="30" width="30" src="{% static 'img/add.svg' %}" alt=""></span></button>
 		<form class="d-inline" id="delete_stamp_form" action="{% url 'stamp_delete' x.id %}" data-value="{{ x.id }}">
           {% csrf_token %}
           <button type="submit" id="stamp_delete" class="btn btn-danger">
-          Delete TimeStamp</button>
+          Delete TimeStamp <span><img class="ml-1" height="30" width="30" src="{% static 'img/delete.svg' %}" alt=""></span></button>
         </form>
     <p data-id="{{ x.id }}" class="m-0 mt-3">{% if x.forex.all %} {{ x.forex.all|length }} Entries {% else %} No Entries yet. {% endif %}</p>
 
 	</td></tr>
   {% for entry in x.forex.all reversed%}
     <tr id="{{ entry.entry_id }}" data-stamp-id="{{ x.id }}">
-      <td class="market">{{ entry.pair }}</td>
+      <td class="market">{{ entry.pair }}
+      </td>
       <td class="span">{% if entry.option == "b" %}<span class="badge badge-success">{{ entry.get_option_display }}</span>{% else %}<span class="badge badge-danger">{{ entry.get_option_display }}</span>{% endif %}</td>
       <td class="span">August 23, 2019 19:18</td>
       <td class="span">August 23, 2019</td>
-      <td>{{ entry.reason.text }}</td>
-      <td>{{ entry.lesson.text }}</td>
+      <td>
+        <p>{{ entry.reason.text }}</p>
+        <button class="btn btn-info" href="#" id="image">
+          View Image
+        </button>
+      </td>
+      <td>
+        <p>{{ entry.lesson.text }}</p>
+        <button class="btn btn-info" href="#" id="image">
+          View Image
+        </button>
+      </td>
       <td class="span">{{ entry.price }}</td>
       <td class="span">{{ entry.SL }}</td>
       <td class="span">{{ entry.TP }}</td>
