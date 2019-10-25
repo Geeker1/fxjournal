@@ -55,12 +55,12 @@ h1, h2, h3,h4,h5,h6{
 .app-second{
 	content: "";
 	position: absolute;
-	background-image: url("../img/chart.png");
+	background-image: url("../img/chart3.jpg");
 	width: 500%;
 	height: 100%;
 	top: 0;
 	right: 0;
-	filter: brightness(50%);
+	filter: brightness(25%);
 	animation: slider 100s linear infinite;
 	background-repeat: repeat-x;
 	background-size: contain;
